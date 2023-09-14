@@ -1,5 +1,12 @@
-template-repository (1.0-1) unstable; urgency=medium
+gmbal-commons (3.2.1-b003-1.1) unstable; urgency=medium
 
-  * Initial release
+  * Non maintainer upload by the Reproducible Builds team.
+  * No source change upload to rebuild on buildd with .buildinfo files.
 
- -- Tsic404 <liuheng@deepin.org>  Sat, 28 Jan 2023 13:46:49 +0800
+ -- Holger Levsen <holger@debian.org>  Tue, 05 Jan 2021 00:58:35 +0100
+
+gmbal-commons (3.2.1-b003-1) unstable; urgency=medium
+
+  * Initial release (Closes: #904249)
+
+ -- Emmanuel Bourg <ebourg@apache.org>  Sun, 22 Jul 2018 11:46:26 +0200

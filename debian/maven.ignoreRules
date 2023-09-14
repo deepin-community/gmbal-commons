@@ -1,0 +1,10 @@
+
+org.apache.maven.plugins maven-gpg-plugin * * * *
+org.apache.maven.plugins maven-javadoc-plugin * * * *
+org.apache.maven.plugins maven-project-info-reports-plugin * * * *
+org.apache.maven.plugins maven-release-plugin * * * *
+org.apache.maven.plugins maven-scm-publish-plugin * * * *
+org.apache.maven.plugins maven-site-plugin * * * *
+org.apache.maven.plugins maven-source-plugin * * * *
+org.apache.maven.plugins maven-toolchains-plugin * * * *
+org.apache.maven.scm maven-scm-provider-gitexe * * * *
