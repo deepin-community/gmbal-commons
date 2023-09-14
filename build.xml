@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+    Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+
+    The contents of this file are subject to the terms of either the GNU
+    General Public License Version 2 only ("GPL") or the Common Development
+    and Distribution License("CDDL") (collectively, the "License").  You
+    may not use this file except in compliance with the License.  You can
+    obtain a copy of the License at
+    https://oss.oracle.com/licenses/CDDL+GPL-1.1
+    or LICENSE.txt.  See the License for the specific
+    language governing permissions and limitations under the License.
+
+    When distributing the software, include this License Header Notice in each
+    file and include the License file at LICENSE.txt.
+
+    GPL Classpath Exception:
+    Oracle designates this particular file as subject to the "Classpath"
+    exception as provided by Oracle in the GPL Version 2 section of the License
+    file that accompanied this code.
+
+    Modifications:
+    If applicable, add the following below the License Header, with the fields
+    enclosed by brackets [] replaced by your own identifying information:
+    "Portions Copyright [year] [name of copyright owner]"
+
+    Contributor(s):
+    If you wish your version of this file to be governed by only the CDDL or
+    only the GPL Version 2, indicate your decision by adding "[Contributor]
+    elects to include this software in this distribution under the [CDDL or GPL
+    Version 2] license."  If you don't indicate a single choice of license, a
+    recipient has the option to distribute your version of this file under
+    either the CDDL, the GPL Version 2 or to extend the choice of license to
+    its licensees as provided above.  However, if you add GPL Version 2 code
+    and therefore, elected the GPL Version 2 license, then the option applies
+    only if the new code is made subject to such option by the copyright
+    holder.
+
+-->
+
+<!-- You may freely edit this file. See commented blocks below for -->
+<!-- some examples of how to customize the build. -->
+<!-- (If you delete it and reopen the project it will be recreated.) -->
+<!-- By default, only the Clean and Build commands use this build script. -->
+<!-- Commands such as Run, Debug, and Test only use this build script if -->
+<!-- the Compile on Save feature is turned off for the project. -->
+<!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
+<!-- in the project's Project Properties dialog box.-->
+<project name="GlassFish_Common_APIs" default="default" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+    <description>Builds, tests, and runs the project GlassFish Common APIs.</description>
+    <import file="nbproject/build-impl.xml"/>
+    <!--
+
+    There exist several targets which are by default empty and which can be 
+    used for execution of your tasks. These targets are usually executed 
+    before and after some main targets. They are: 
+
+      -pre-init:                 called before initialization of project properties
+      -post-init:                called after initialization of project properties
+      -pre-compile:              called before javac compilation
+      -post-compile:             called after javac compilation
+      -pre-compile-single:       called before javac compilation of single file
+      -post-compile-single:      called after javac compilation of single file
+      -pre-compile-test:         called before javac compilation of JUnit tests
+      -post-compile-test:        called after javac compilation of JUnit tests
+      -pre-compile-test-single:  called before javac compilation of single JUnit test
+      -post-compile-test-single: called after javac compilation of single JUunit test
+      -pre-jar:                  called before JAR building
+      -post-jar:                 called after JAR building
+      -post-clean:               called after cleaning build products
+
+    (Targets beginning with '-' are not intended to be called on their own.)
+
+    Example of inserting an obfuscator after compilation could look like this:
+
+        <target name="-post-compile">
+            <obfuscate>
+                <fileset dir="${build.classes.dir}"/>
+            </obfuscate>
+        </target>
+
+    For list of available properties check the imported 
+    nbproject/build-impl.xml file. 
+
+
+    Another way to customize the build is by overriding existing main targets.
+    The targets of interest are: 
+
+      -init-macrodef-javac:     defines macro for javac compilation
+      -init-macrodef-junit:     defines macro for junit execution
+      -init-macrodef-debug:     defines macro for class debugging
+      -init-macrodef-java:      defines macro for class execution
+      -do-jar-with-manifest:    JAR building (if you are using a manifest)
+      -do-jar-without-manifest: JAR building (if you are not using a manifest)
+      run:                      execution of project 
+      -javadoc-build:           Javadoc generation
+      test-report:              JUnit report generation
+
+    An example of overriding the target for project execution could look like this:
+
+        <target name="run" depends="GlassFish_Common_APIs-impl.jar">
+            <exec dir="bin" executable="launcher.exe">
+                <arg file="${dist.jar}"/>
+            </exec>
+        </target>
+
+    Notice that the overridden target depends on the jar target and not only on 
+    the compile target as the regular run target does. Again, for a list of available 
+    properties which you can use, check the target you are overriding in the
+    nbproject/build-impl.xml file. 
+
+    -->
+    <property file="build.properties"/>
+
+    <path id="maven.class.path"  path="${local.maven.ant.tasks.jar}"/>
+
+    <typedef resource="org/apache/maven/artifact/ant/antlib.xml" 
+        uri="antlib:org.apache.maven.artifact.ant" 
+        classpathref="maven.class.path">
+    </typedef>
+
+    <target name="mavenize" depends="project-init" description="initialize maven ">
+        <artifact:install-provider artifactId="wagon-svn" groupId="org.jvnet.wagon-svn" version="1.7">
+            <artifact:remoteRepository id="java.net.maven2.repository" url="http://download.java.net/maven/2/" />
+        </artifact:install-provider>
+    </target>
+
+    <target name="project-init">
+        <property environment="env"/>
+        <!-- initialize properties specific to making bundles and releasing them. -->
+        <property name="repo.url"                       value="java-net:/maven2-repository/trunk/repository"/>
+        <property name="maven.local.repository"         value="file://${env.HOME}/.m2"/>
+        <property name="local.url"                      value="${maven.local.repository}"/>
+        <property name="full.jar"                       value="dist/GlassFish_Common_APIs.jar"/>
+        <property name="groupId"                        value="${management-api.groupid}"/>
+        <property name="artifactId"                     value="${management-api.artifactid}"/>
+    </target>
+    
+    <target name="clean">
+        <delete dir="dist"/>
+        <delete file="make/temp.pom"/>
+    </target>
+
+    <artifact:remoteRepository id="bnd.repo" url="${bnd.repository}"/> 
+
+    <artifact:dependencies pathId="bnd.classpath">
+        <remoteRepository refId="bnd.repo"/>
+        <dependency groupId="${bnd.groupid}" artifactId="${bnd.artifactid}" version="${bnd.version}" scope="compile"/>
+    </artifact:dependencies>
+
+    <macrodef name="make-bundle">
+        <attribute name="file"/>
+            <sequential>
+                <mkdir dir="dist/bundles"/>
+                <java classpathref="bnd.classpath" classname="aQute.bnd.main.bnd" fork="true" failonerror="true">
+                    <arg value="build"/>
+                    <arg value="-classpath"/>
+                    <arg value="${full.jar}"/>
+                    <arg value="-output"/>
+                    <arg value="dist/bundles/@{file}.jar"/>
+                    <arg value="make/@{file}.bnd"/>
+                </java>
+            </sequential>
+    </macrodef>
+
+    <target name="make-source-bundle" depends="project-init">
+        <mkdir dir="dist/bundles"/> 
+        <jar jarfile="dist/bundles/${artifactId}-sources.jar" duplicate="fail">
+            <fileset dir="src">
+                <include name="org/glassfish/external/**/*.java"/>
+            </fileset>
+        </jar>
+    </target>
+
+    <target name="make-bnd-properties" depends="project-init">
+        <delete file="make/bnd.properties"/>
+        <echo message="Bundle-Version: ${management-api.version}" file="make/bnd.properties"/>
+    </target>
+
+    <target name="make-bundles" depends="project-init,make-source-bundle,make-bnd-properties">
+        <make-bundle file="${artifactId}"/>
+    </target>
+
+    <target name="increment-build-version" depends="project-init">
+        <propertyfile file="build.properties">
+            <entry key="build.int" type="int" value="1" pattern="000" operation="+"/>
+        </propertyfile>
+    </target>
+
+    <macrodef name="make-file">
+        <attribute name="module"/>
+        <attribute name="description"/>
+        <sequential>
+            <loadfile property="HEADER-@{module}" srcFile="make/pom.header.xml">
+                <filterchain>
+                    <replacetokens>
+                        <token key="artifactId" value="@{module}"/>
+                        <token key="version" value="${management-api.version}"/>
+                        <token key="jarDescription" value="@{description}"/>
+                        <token key="groupId" value="${groupId}"/>
+                        <token key="repositoryUrl" value="${repo.url}"/>
+                    </replacetokens>
+                </filterchain>
+            </loadfile>
+            <copy file="make/@{module}.template.xml" tofile="make/temp.pom" overwrite="true">
+                <filterset>
+                  <filter token="HEADER" value="${HEADER-@{module}}"/>
+                  <filter token="version" value="${management-api.version}"/>
+                  <filter token="groupId" value="${groupId}"/>
+                </filterset>
+            </copy>
+        </sequential>
+    </macrodef>
+
+    <target name="make-pom-file" depends="project-init">
+        <make-file module="${artifactId}" description="The GlassFish Common APIs for monitoring"/>
+    </target>
+
+    <macrodef name="push-to-maven">
+        <attribute name="module"/>
+        <attribute name="description"/>
+        <attribute name="repo"/>
+        <sequential>
+            <make-file module="@{module}" description="@{description}"/>
+
+            <artifact:pom id="pom.file" file="make/temp.pom" />
+            <artifact:deploy file="dist/bundles/@{module}.jar">
+                <remoteRepository url="@{repo}"/>
+                <pom refid="pom.file"/>
+            </artifact:deploy>
+            <delete file="make/temp.pom" verbose="true"/>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="release-to-maven">
+        <attribute name="repo"/>
+        <sequential>
+            <echo message="Releasing modules with version ${management-api.version} to @{repo}"/>
+            <push-to-maven repo="@{repo}" module="${artifactId}" 
+                description="GlassFish Common APIs"/>
+            <push-to-maven repo="@{repo}" module="${artifactId}-sources" 
+                description="GlassFish Common API source code"/>
+        </sequential>
+    </macrodef>
+
+    <target name="release" depends="project-init, mavenize">
+        <release-to-maven repo="${repo.url}"/>
+    </target>
+
+    <target name="release-local" depends="project-init, mavenize">
+        <release-to-maven repo="${local.url}"/>
+    </target>
+</project>
